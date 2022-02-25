@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Additional sources for Paperback",
   "repositoryName": "Manga1000 For Paperback",
+  "homepage": "https://btylerh7.github.io/extensions-promises",
   "scripts": {
     "start": "tsc && node dist/api.js",
     "build": "tsc",
