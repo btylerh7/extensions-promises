@@ -5,6 +5,14 @@
   "repositoryName": "Manga1000 For Paperback",
   "homepage": "https://btylerh7.github.io/extensions-promises",
   "main": "index.js",
+  "repositoryDescription": "Some description here",
+  "baseURL": "https://github.io/btylerh7/extensions-promises",
+  "sources": [
+    {
+      "name": "Manga1000",
+      "tags": []
+    }
+  ],
   "scripts": {
     "start": "tsc && node dist/api.js",
     "build": "tsc",

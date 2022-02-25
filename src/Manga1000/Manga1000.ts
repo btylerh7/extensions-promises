@@ -15,7 +15,7 @@ import {
   SourceInfo,
   TagType,
 } from 'paperback-extensions-common'
-
+import { decodeHTML } from 'entities'
 import {
   parseMangaDetails,
   parseChapters,
@@ -47,7 +47,10 @@ export const Manga1000Info: SourceInfo = {
 export class Manga1000 extends Source {
   baseUrl: string = M1000_DOMAIN
   languageCode: LanguageCode = LanguageCode.JAPANESE
-
+  getMangaShareUrl(mangaId: string): string {
+    const mangaIdUrl = encodeURI(decodeHTML(mangaId))
+    return `${M1000_DOMAIN}/${mangaIdUrl}/`
+  }
   async getMangaDetails(mangaId: string): Promise<Manga> {
     const request = createRequestObject({
       url: `${M1000_DOMAIN}/${mangaId}`,
