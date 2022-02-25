@@ -12,6 +12,7 @@
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test",
     "bundle": "paperback bundle",
     "serve": "paperback serve -p 8000",
+    "predeploy": "paperback bundle",
     "deploy": "gh-pages -d bundles"
   },
   "author": "Paperback",

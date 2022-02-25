@@ -45,6 +45,9 @@ export const Manga1000Info: SourceInfo = {
 }
 
 export class Manga1000 extends Source {
+  baseUrl: string = M1000_DOMAIN
+  languageCode: LanguageCode = LanguageCode.JAPANESE
+
   async getMangaDetails(mangaId: string): Promise<Manga> {
     const request = createRequestObject({
       url: `${M1000_DOMAIN}/${mangaId}`,
