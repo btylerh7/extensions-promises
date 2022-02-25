@@ -15,7 +15,7 @@ import {
   SourceInfo,
   TagType,
 } from 'paperback-extensions-common'
-import { decodeHTML } from 'entities'
+import { decodeHTML, encode } from 'entities'
 import {
   parseMangaDetails,
   parseChapters,
@@ -23,8 +23,11 @@ import {
   parseSearchRequest,
 } from './Manga1000Parser'
 
-export const M1000_DOMAIN = 'https://manga1000.com'
-const headers = { 'content-type': 'application/x-www-form-urlencoded' }
+export const M1000_DOMAIN = 'https://mangapro.top'
+const headers = {
+  'content-type': 'application/x-www-form-urlencoded',
+  Referer: `${M1000_DOMAIN}`,
+}
 const method = 'GET'
 
 export const Manga1000Info: SourceInfo = {
@@ -45,16 +48,32 @@ export const Manga1000Info: SourceInfo = {
 }
 
 export class Manga1000 extends Source {
-  baseUrl: string = M1000_DOMAIN
-  languageCode: LanguageCode = LanguageCode.JAPANESE
+  readonly cookies = [
+    createCookie({
+      name: 'isAdult',
+      value: '1',
+      domain: `https://manga1000.top`,
+    }),
+  ]
+  cloudflareBypassRequest() {
+    return createRequestObject({
+      url: `${M1000_DOMAIN}`,
+      method,
+    })
+  }
+  requestManager = createRequestManager({
+    requestsPerSecond: 4,
+    requestTimeout: 15000,
+  })
   getMangaShareUrl(mangaId: string): string {
     const mangaIdUrl = encodeURI(decodeHTML(mangaId))
     return `${M1000_DOMAIN}/${mangaIdUrl}/`
   }
   async getMangaDetails(mangaId: string): Promise<Manga> {
     const request = createRequestObject({
-      url: `${M1000_DOMAIN}/${mangaId}`,
+      url: encodeURI(`${M1000_DOMAIN}/${mangaId}`),
       method,
+      cookies: this.cookies,
     })
     const data = await this.requestManager.schedule(request, 1)
     let $ = this.cheerio.load(data.data)
@@ -63,8 +82,9 @@ export class Manga1000 extends Source {
   }
   async getChapters(mangaId: string): Promise<Chapter[]> {
     const request = createRequestObject({
-      url: `${M1000_DOMAIN}/${mangaId}`,
+      url: encodeURI(`${M1000_DOMAIN}/${mangaId}`),
       method,
+      headers,
     })
     const data = await this.requestManager.schedule(request, 1)
     let $ = this.cheerio.load(data.data)
@@ -76,8 +96,9 @@ export class Manga1000 extends Source {
     chapterId: string
   ): Promise<ChapterDetails> {
     const request = createRequestObject({
-      url: `${M1000_DOMAIN}/${mangaId}`,
+      url: encodeURI(`${M1000_DOMAIN}/${mangaId}`),
       method,
+      headers,
     })
     const data = await this.requestManager.schedule(request, 1)
     let $ = this.cheerio.load(data.data)
@@ -91,8 +112,9 @@ export class Manga1000 extends Source {
     let page: number = metadata?.page ?? 1
 
     const request = createRequestObject({
-      url: `${M1000_DOMAIN}/?s=${query}`,
+      url: encodeURI(`${M1000_DOMAIN}/?s=${query}`),
       method,
+      headers,
     })
     const data = await this.requestManager.schedule(request, 1)
     let $ = this.cheerio.load(data.data)
