@@ -30,7 +30,7 @@ const method = 'GET'
 export const Manga1000Info: SourceInfo = {
   version: '1.0',
   name: 'Manga1000',
-  icon: 'icon.png',
+  icon: 'logo.png',
   author: 'Tyler Baker',
   authorWebsite: 'https://github.com/btylerh7',
   description: 'Extension that pulls manga from Manga1000',
