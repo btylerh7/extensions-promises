@@ -890,8 +890,11 @@ exports.Manga1000 = exports.Manga1000Info = exports.M1000_DOMAIN = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const entities_1 = require("entities");
 const Manga1000Parser_1 = require("./Manga1000Parser");
-exports.M1000_DOMAIN = 'https://manga1000.com';
-const headers = { 'content-type': 'application/x-www-form-urlencoded' };
+exports.M1000_DOMAIN = 'https://mangapro.top';
+const headers = {
+    'content-type': 'application/x-www-form-urlencoded',
+    Referer: `${exports.M1000_DOMAIN}`,
+};
 const method = 'GET';
 exports.Manga1000Info = {
     version: '1.0',
@@ -912,8 +915,23 @@ exports.Manga1000Info = {
 class Manga1000 extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
-        this.baseUrl = exports.M1000_DOMAIN;
-        this.languageCode = paperback_extensions_common_1.LanguageCode.JAPANESE;
+        this.cookies = [
+            createCookie({
+                name: 'isAdult',
+                value: '1',
+                domain: `https://manga1000.top`,
+            }),
+        ];
+        this.requestManager = createRequestManager({
+            requestsPerSecond: 4,
+            requestTimeout: 15000,
+        });
+    }
+    cloudflareBypassRequest() {
+        return createRequestObject({
+            url: `${exports.M1000_DOMAIN}`,
+            method,
+        });
     }
     getMangaShareUrl(mangaId) {
         const mangaIdUrl = encodeURI(entities_1.decodeHTML(mangaId));
@@ -922,8 +940,9 @@ class Manga1000 extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${exports.M1000_DOMAIN}/${mangaId}`,
+                url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
                 method,
+                cookies: this.cookies,
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -933,8 +952,9 @@ class Manga1000 extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${exports.M1000_DOMAIN}/${mangaId}`,
+                url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
                 method,
+                headers,
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -944,8 +964,9 @@ class Manga1000 extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${exports.M1000_DOMAIN}/${mangaId}`,
+                url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
                 method,
+                headers,
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -957,8 +978,9 @@ class Manga1000 extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const request = createRequestObject({
-                url: `${exports.M1000_DOMAIN}/?s=${query}`,
+                url: encodeURI(`${exports.M1000_DOMAIN}/?s=${query}`),
                 method,
+                headers,
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -982,7 +1004,7 @@ exports.parseMangaDetails = ($, mangaId) => {
     const titles = [$('.entry-title').text().split(' ')[0]];
     const image = $('.wp-image-163').attr('src');
     const status = paperback_extensions_common_1.MangaStatus.ONGOING; //Manga1000 does not provide this info
-    const author = $('figcaption').find('strong').next().text();
+    const author = $('.entry-content').find('p').text().split(' ')[1];
     return createManga({
         id: mangaId,
         titles: titles,
