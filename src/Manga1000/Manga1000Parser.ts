@@ -73,3 +73,26 @@ export const parseChapterDetails = (
     longStrip: false,
   })
 }
+
+export const parseSearchRequest = ($: CheerioStatic, query: any) => {
+  const tiles: MangaTile[] = []
+  const results = $('.inner-wrapper').find('article')
+
+  for (let article of results.toArray()) {
+    const id = article.attribs.class[0].split('-')[1]
+    const magnaId = decodeURI($(article).find('.entry-title > a').text())
+    const image = $(article).find('img')?.first().attr('src') ?? ''
+    const title = $(article).find('.entry-title > a').text()
+
+    tiles.push(
+      createMangaTile({
+        id: magnaId,
+        image: image,
+        title: createIconText({
+          text: title,
+        }),
+      })
+    )
+  }
+  return tiles
+}
