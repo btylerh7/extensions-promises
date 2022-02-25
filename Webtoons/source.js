@@ -1,4 +1,6 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Sources = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
 "use strict";
 /**
  * Request objects hold information for a particular source (see sources for example)
@@ -143,7 +145,7 @@ class Source {
 }
 exports.Source = Source;
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -158,7 +160,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Source"), exports);
 
-},{"./Source":1}],3:[function(require,module,exports){
+},{"./Source":2}],4:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -175,17 +177,17 @@ __exportStar(require("./base"), exports);
 __exportStar(require("./models"), exports);
 __exportStar(require("./APIWrapper"), exports);
 
-},{"./APIWrapper":27,"./base":2,"./models":24}],4:[function(require,module,exports){
+},{"./APIWrapper":1,"./base":3,"./models":25}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],5:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],6:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],7:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],8:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],7:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],8:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LanguageCode = void 0;
@@ -233,7 +235,7 @@ var LanguageCode;
     LanguageCode["VIETNAMESE"] = "vn";
 })(LanguageCode = exports.LanguageCode || (exports.LanguageCode = {}));
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MangaStatus = void 0;
@@ -243,27 +245,27 @@ var MangaStatus;
     MangaStatus[MangaStatus["COMPLETED"] = 0] = "COMPLETED";
 })(MangaStatus = exports.MangaStatus || (exports.MangaStatus = {}));
 
-},{}],10:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],11:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],12:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],13:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],14:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],15:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],16:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],17:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],18:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],19:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],20:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],12:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],13:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],14:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],15:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],16:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],17:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],18:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],19:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],20:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagType = void 0;
@@ -281,13 +283,13 @@ var TagType;
     TagType["RED"] = "danger";
 })(TagType = exports.TagType || (exports.TagType = {}));
 
-},{}],21:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],22:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],23:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],24:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],23:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],24:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"dup":5}],25:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -321,7 +323,7 @@ __exportStar(require("./TrackObject"), exports);
 __exportStar(require("./OAuth"), exports);
 __exportStar(require("./UserForm"), exports);
 
-},{"./Chapter":4,"./ChapterDetails":5,"./Constants":6,"./HomeSection":7,"./Languages":8,"./Manga":9,"./MangaTile":10,"./MangaUpdate":11,"./OAuth":12,"./PagedResults":13,"./RequestHeaders":14,"./RequestManager":15,"./RequestObject":16,"./ResponseObject":17,"./SearchRequest":18,"./SourceInfo":19,"./SourceTag":20,"./TagSection":21,"./TrackObject":22,"./UserForm":23}],25:[function(require,module,exports){
+},{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23,"./UserForm":24}],26:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -595,7 +597,7 @@ class Webtoons extends paperback_extensions_common_1.Source {
 }
 exports.Webtoons = Webtoons;
 
-},{"./WebtoonsParser":26,"paperback-extensions-common":3}],26:[function(require,module,exports){
+},{"./WebtoonsParser":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -931,7 +933,5 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     sectionCallback(sections[1]);
 };
 
-},{"paperback-extensions-common":3}],27:[function(require,module,exports){
-
-},{}]},{},[25])(25)
+},{"paperback-extensions-common":4}]},{},[26])(26)
 });
