@@ -1,5 +1,107 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Sources = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.APIWrapper = void 0;
+require("./models/impl_export");
+class APIWrapper {
+    getMangaDetails(source, mangaId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return source.getMangaDetails(mangaId);
+        });
+    }
+    getChapters(source, mangaId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return source.getChapters(mangaId);
+        });
+    }
+    getChapterDetails(source, mangaId, chapterId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return source.getChapterDetails(mangaId, chapterId);
+        });
+    }
+    searchRequest(source, query, metadata) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return source.searchRequest(query, metadata);
+        });
+    }
+    getTags(source) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return source.getTags();
+        });
+    }
+    filterUpdatedManga(source, time, ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // This method uses a callback to get multiple batches of updated manga. Aggrigate the data here
+            // and return it all at once as a response
+            var updateList = [];
+            let callbackFunc = function (updates) {
+                updateList.push(updates);
+            };
+            yield source.filterUpdatedManga(callbackFunc, time, ids);
+            return updateList;
+        });
+    }
+    getHomePageSections(source) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // This method uses a callback to get multiple batches of a homesection. Aggrigate data and return all at once
+            var sections = [];
+            let callbackFunc = function (section) {
+                sections.push(section);
+            };
+            yield source.getHomePageSections(callbackFunc);
+            return sections;
+        });
+    }
+    /**
+     * Performs a 'get more' request. Usually this is done when a homesection has it's 'View More' button tapped, and the user
+     * is starting to scroll through all of the available titles in each section.
+     * It is recommended that when you write your tests for a source, that you run one test using this function,
+     * for each homepageSectionId that the source offers, if those sections are expected to traverse multiple pages
+     * @param source
+     * @param homepageSectionId
+     * @param metadata
+     * @param resultPageLimiter How many pages this should attempt to iterate through at most. This prevents
+     * you from being in an infinite loop. Defaults to 3.
+     */
+    getViewMoreItems(source, homepageSectionId, metadata, resultPageLimiter = 3) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var results = [];
+            // This may (and likely will) run multiple times, for multiple pages. Aggrigate up to the page limiter
+            for (let i = 0; i < resultPageLimiter; i++) {
+                let sourceResults = yield source.getViewMoreItems(homepageSectionId, metadata);
+                if (sourceResults === null || sourceResults.results.length == 0) {
+                    console.error(`getViewMoreItems was asked to run to a maximum of ${resultPageLimiter} pages, but retrieved no results on page ${i}`);
+                    return results;
+                }
+                results = results.concat(sourceResults.results);
+                metadata = sourceResults.metadata;
+                // If there is no other pages available, meaning the metadata is empty, exit the loop and do not try again
+                if (!sourceResults.metadata) {
+                    break;
+                }
+            }
+            return results;
+        });
+    }
+    getWebsiteMangaDirectory(source, metadata) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return source.getWebsiteMangaDirectory(metadata);
+        });
+    }
+}
+exports.APIWrapper = APIWrapper;
+
+},{"./models/impl_export":40}],2:[function(require,module,exports){
+"use strict";
 /**
  * Request objects hold information for a particular source (see sources for example)
  * This allows us to to use a generic api to make the calls against any source
@@ -143,7 +245,7 @@ class Source {
 }
 exports.Source = Source;
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -158,7 +260,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Source"), exports);
 
-},{"./Source":1}],3:[function(require,module,exports){
+},{"./Source":2}],4:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -175,17 +277,47 @@ __exportStar(require("./base"), exports);
 __exportStar(require("./models"), exports);
 __exportStar(require("./APIWrapper"), exports);
 
-},{"./APIWrapper":27,"./base":2,"./models":24}],4:[function(require,module,exports){
+},{"./APIWrapper":1,"./base":3,"./models":41}],5:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createChapter = function (chapter) {
+    return chapter;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],5:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],6:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],7:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createChapterDetails = function (chapterDetails) {
+    return chapterDetails;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],8:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],9:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],10:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createHomeSection = function (section) {
+    return section;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],11:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LanguageCode = void 0;
@@ -233,7 +365,17 @@ var LanguageCode;
     LanguageCode["VIETNAMESE"] = "vn";
 })(LanguageCode = exports.LanguageCode || (exports.LanguageCode = {}));
 
-},{}],9:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createManga = function (manga) {
+    return manga;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MangaStatus = void 0;
@@ -243,27 +385,166 @@ var MangaStatus;
     MangaStatus[MangaStatus["COMPLETED"] = 0] = "COMPLETED";
 })(MangaStatus = exports.MangaStatus || (exports.MangaStatus = {}));
 
-},{}],10:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],11:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],12:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],13:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],14:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],15:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],16:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],17:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],18:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],19:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],20:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createMangaTile = function (mangaTile) {
+    return mangaTile;
+};
+_global.createIconText = function (iconText) {
+    return iconText;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],16:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],17:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createMangaUpdates = function (update) {
+    return update;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],18:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],19:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createPagedResults = function (update) {
+    return update;
+};
+_global.isOAuthTokenExpired = function (token) {
+    return (new Date().getMilliseconds() / 1000) > (token.createdAt + token.expiresIn - 3600);
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],20:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],21:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createPagedResults = function (update) {
+    return update;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],22:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],23:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],24:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createRequestManager = function (info) {
+    const axios = require('axios');
+    return Object.assign(Object.assign({}, info), { schedule: function (request, retryCount) {
+            var _a, _b, _c, _d, _e;
+            return __awaiter(this, void 0, void 0, function* () {
+                // Append any cookies into the header properly
+                let headers = (_a = request.headers) !== null && _a !== void 0 ? _a : {};
+                let cookieData = '';
+                for (let cookie of (_b = request.cookies) !== null && _b !== void 0 ? _b : [])
+                    cookieData += `${cookie.name}=${cookie.value};`;
+                headers['cookie'] = cookieData;
+                // If no user agent has been supplied, default to a basic Paperback-iOS agent
+                headers['user-agent'] = (_c = headers["user-agent"]) !== null && _c !== void 0 ? _c : 'Paperback-iOS';
+                // If we are using a urlencoded form data as a post body, we need to decode the request for Axios
+                let decodedData = request.data;
+                if ((_d = headers['content-type']) === null || _d === void 0 ? void 0 : _d.includes('application/x-www-form-urlencoded')) {
+                    decodedData = "";
+                    for (let attribute in request.data) {
+                        if (decodedData) {
+                            decodedData += "&";
+                        }
+                        decodedData += `${attribute}=${request.data[attribute]}`;
+                    }
+                }
+                // We must first get the response object from Axios, and then transcribe it into our own Response type before returning
+                let response = yield axios({
+                    url: `${request.url}${(_e = request.param) !== null && _e !== void 0 ? _e : ''}`,
+                    method: request.method,
+                    headers: headers,
+                    data: decodedData,
+                    timeout: info.requestTimeout || 0
+                });
+                return Promise.resolve(createResponseObject({
+                    data: response.data,
+                    status: response.status,
+                    headers: response.headers,
+                    request: request
+                }));
+            });
+        } });
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"axios":"axios"}],25:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],26:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createCookie = function (cookie) {
+    return cookie;
+};
+_global.createRequestObject = function (request) {
+    return request;
+};
+_global.createRequestObject = function (requestObject) {
+    return requestObject;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],27:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],28:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createResponseObject = function (responseObject) {
+    return responseObject;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],29:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],30:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createSearchRequest = function (searchRequest) {
+    return searchRequest;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],31:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],32:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],33:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagType = void 0;
@@ -281,13 +562,77 @@ var TagType;
     TagType["RED"] = "danger";
 })(TagType = exports.TagType || (exports.TagType = {}));
 
-},{}],21:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],22:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],23:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],24:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createTagSection = function (tagSection) {
+    return tagSection;
+};
+_global.createTag = function (tag) {
+    return tag;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],35:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],36:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createTrackObject = function (trackObject) {
+    return trackObject;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],37:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],38:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _global = global;
+_global.createUserForm = function (userForm) {
+    return userForm;
+};
+_global.createTextFieldObject = function (textField) {
+    return textField;
+};
+_global.createToggleFieldObject = function (toggleField) {
+    return toggleField;
+};
+_global.createPickerFieldObject = function (pickerField) {
+    return pickerField;
+};
+_global.createComboFieldObject = function (comboField) {
+    return comboField;
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],39:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],40:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("./Chapter/_impl");
+require("./ChapterDetails/_impl");
+require("./HomeSection/_impl");
+require("./Manga/_impl");
+require("./MangaTile/_impl");
+require("./RequestObject/_impl");
+require("./ResponseObject/_impl");
+require("./SearchRequest/_impl");
+require("./TagSection/_impl");
+require("./PagedResults/_impl");
+require("./RequestManager/_impl");
+require("./TrackObject/_impl");
+require("./OAuth/_impl");
+require("./MangaUpdate/_impl");
+require("./UserForm/_impl");
+
+},{"./Chapter/_impl":5,"./ChapterDetails/_impl":7,"./HomeSection/_impl":10,"./Manga/_impl":13,"./MangaTile/_impl":15,"./MangaUpdate/_impl":17,"./OAuth/_impl":19,"./PagedResults/_impl":21,"./RequestManager/_impl":24,"./RequestObject/_impl":26,"./ResponseObject/_impl":28,"./SearchRequest/_impl":30,"./TagSection/_impl":34,"./TrackObject/_impl":36,"./UserForm/_impl":38}],41:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -321,7 +666,7 @@ __exportStar(require("./TrackObject"), exports);
 __exportStar(require("./OAuth"), exports);
 __exportStar(require("./UserForm"), exports);
 
-},{"./Chapter":4,"./ChapterDetails":5,"./Constants":6,"./HomeSection":7,"./Languages":8,"./Manga":9,"./MangaTile":10,"./MangaUpdate":11,"./OAuth":12,"./PagedResults":13,"./RequestHeaders":14,"./RequestManager":15,"./RequestObject":16,"./ResponseObject":17,"./SearchRequest":18,"./SourceInfo":19,"./SourceTag":20,"./TagSection":21,"./TrackObject":22,"./UserForm":23}],25:[function(require,module,exports){
+},{"./Chapter":6,"./ChapterDetails":8,"./Constants":9,"./HomeSection":11,"./Languages":12,"./Manga":14,"./MangaTile":16,"./MangaUpdate":18,"./OAuth":20,"./PagedResults":22,"./RequestHeaders":23,"./RequestManager":25,"./RequestObject":27,"./ResponseObject":29,"./SearchRequest":31,"./SourceInfo":32,"./SourceTag":33,"./TagSection":35,"./TrackObject":37,"./UserForm":39}],42:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -498,7 +843,7 @@ class MangaPark extends paperback_extensions_common_1.Source {
 }
 exports.MangaPark = MangaPark;
 
-},{"./MangaParkParser":26,"paperback-extensions-common":3}],26:[function(require,module,exports){
+},{"./MangaParkParser":43,"paperback-extensions-common":4}],43:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseTags = exports.parseSearch = exports.generateSearch = exports.parseViewMore = exports.parseHomeSections = exports.parseUpdatedManga = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
@@ -864,7 +1209,5 @@ const convertTime = (timeAgo) => {
     return time;
 };
 
-},{"paperback-extensions-common":3}],27:[function(require,module,exports){
-
-},{}]},{},[25])(25)
+},{"paperback-extensions-common":4}]},{},[42])(42)
 });

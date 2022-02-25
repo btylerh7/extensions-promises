@@ -1,6 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Sources = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
 "use strict";
 /**
  * Request objects hold information for a particular source (see sources for example)
@@ -145,7 +143,7 @@ class Source {
 }
 exports.Source = Source;
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -160,7 +158,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Source"), exports);
 
-},{"./Source":2}],4:[function(require,module,exports){
+},{"./Source":1}],3:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -177,17 +175,17 @@ __exportStar(require("./base"), exports);
 __exportStar(require("./models"), exports);
 __exportStar(require("./APIWrapper"), exports);
 
-},{"./APIWrapper":1,"./base":3,"./models":25}],5:[function(require,module,exports){
+},{"./APIWrapper":27,"./base":2,"./models":24}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-},{}],6:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],7:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],8:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],9:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],6:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],7:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LanguageCode = void 0;
@@ -235,7 +233,7 @@ var LanguageCode;
     LanguageCode["VIETNAMESE"] = "vn";
 })(LanguageCode = exports.LanguageCode || (exports.LanguageCode = {}));
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MangaStatus = void 0;
@@ -245,27 +243,27 @@ var MangaStatus;
     MangaStatus[MangaStatus["COMPLETED"] = 0] = "COMPLETED";
 })(MangaStatus = exports.MangaStatus || (exports.MangaStatus = {}));
 
-},{}],11:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],12:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],13:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],14:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],15:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],16:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],17:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],18:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],19:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],20:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],21:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],11:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],12:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],13:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],14:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],15:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],16:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],17:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],18:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],19:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagType = void 0;
@@ -283,13 +281,13 @@ var TagType;
     TagType["RED"] = "danger";
 })(TagType = exports.TagType || (exports.TagType = {}));
 
-},{}],22:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],23:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],24:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],25:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],22:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],23:[function(require,module,exports){
+arguments[4][4][0].apply(exports,arguments)
+},{"dup":4}],24:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -323,7 +321,7 @@ __exportStar(require("./TrackObject"), exports);
 __exportStar(require("./OAuth"), exports);
 __exportStar(require("./UserForm"), exports);
 
-},{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23,"./UserForm":24}],26:[function(require,module,exports){
+},{"./Chapter":4,"./ChapterDetails":5,"./Constants":6,"./HomeSection":7,"./Languages":8,"./Manga":9,"./MangaTile":10,"./MangaUpdate":11,"./OAuth":12,"./PagedResults":13,"./RequestHeaders":14,"./RequestManager":15,"./RequestObject":16,"./ResponseObject":17,"./SearchRequest":18,"./SourceInfo":19,"./SourceTag":20,"./TagSection":21,"./TrackObject":22,"./UserForm":23}],25:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -335,174 +333,156 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Guya = exports.GuyaInfo = void 0;
+exports.Manga1000 = exports.Manga1000Info = exports.M1000_DOMAIN = void 0;
+/* eslint-disable linebreak-style */
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const GUYA_API_BASE = "https://guya.moe";
-const GUYA_SERIES_API_BASE = `${GUYA_API_BASE}/api/series`;
-const GUYA_ALL_SERIES_API = `${GUYA_API_BASE}/api/get_all_series/`;
-const GUYA_LANG = "en";
-const SPLIT_VAR = "|";
-exports.GuyaInfo = {
-    version: "1.1.1",
-    name: "Guya",
-    icon: "icon.png",
-    author: "funkyhippo",
-    authorWebsite: "https://github.com/funkyhippo",
-    description: "Extension that pulls manga from guya.moe",
-    language: GUYA_LANG,
+const Manga1000Parser_1 = require("./Manga1000Parser");
+exports.M1000_DOMAIN = 'https://manga1000.com';
+const headers = { 'content-type': 'application/x-www-form-urlencoded' };
+const method = 'GET';
+exports.Manga1000Info = {
+    version: '1.0',
+    name: 'Manga1000',
+    icon: 'logo.png',
+    author: 'Tyler Baker',
+    authorWebsite: 'https://github.com/btylerh7',
+    description: 'Extension that pulls manga from Manga1000',
     hentaiSource: false,
-    websiteBaseURL: GUYA_API_BASE
+    websiteBaseURL: exports.M1000_DOMAIN,
+    sourceTags: [
+        {
+            text: 'Notifications',
+            type: paperback_extensions_common_1.TagType.GREEN,
+        },
+    ],
 };
-class Guya extends paperback_extensions_common_1.Source {
+class Manga1000 extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let request = createRequestObject({
-                metadata: { mangaId },
-                url: GUYA_ALL_SERIES_API,
-                method: "GET",
+            const request = createRequestObject({
+                url: `${exports.M1000_DOMAIN}/${mangaId}`,
+                method,
             });
-            let response = yield this.requestManager.schedule(request, 1);
-            let result = typeof response.data === "string" ? JSON.parse(response.data) : response.data;
-            let mangas = [];
-            for (let series in result) {
-                let seriesDetails = result[series];
-                if (mangaId.includes(seriesDetails["slug"])) {
-                    mangas.push(createManga({
-                        id: seriesDetails["slug"],
-                        titles: [series],
-                        image: `${GUYA_API_BASE}/${seriesDetails["cover"]}`,
-                        rating: 5,
-                        status: paperback_extensions_common_1.MangaStatus.ONGOING,
-                        artist: seriesDetails["artist"],
-                        author: seriesDetails["author"],
-                        desc: seriesDetails["description"],
-                    }));
-                }
-            }
-            return mangas[0];
+            const data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            return Manga1000Parser_1.parseMangaDetails($, mangaId);
         });
     }
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let request = createRequestObject({
-                metadata: { mangaId },
-                url: `${GUYA_SERIES_API_BASE}/${mangaId}/`,
-                method: "GET",
+            const request = createRequestObject({
+                url: `${exports.M1000_DOMAIN}/${mangaId}`,
+                method,
             });
-            let response = yield this.requestManager.schedule(request, 1);
-            let result = typeof response.data === "string" ? JSON.parse(response.data) : response.data;
-            let rawChapters = result["chapters"];
-            let groupMap = result["groups"];
-            let chapters = [];
-            for (let chapter in rawChapters) {
-                let chapterMetadata = rawChapters[chapter];
-                for (let group in chapterMetadata["groups"]) {
-                    chapters.push(createChapter({
-                        id: `${chapter}${SPLIT_VAR}${group}`,
-                        mangaId: mangaId,
-                        chapNum: Number(chapter),
-                        langCode: paperback_extensions_common_1.LanguageCode.ENGLISH,
-                        name: chapterMetadata["title"],
-                        volume: chapterMetadata["volume"],
-                        group: groupMap[group],
-                        time: new Date(Number(chapterMetadata["release_date"][group]) * 1000),
-                    }));
-                }
-            }
-            return chapters;
+            const data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            return Manga1000Parser_1.parseChapters($, mangaId);
         });
     }
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${GUYA_SERIES_API_BASE}/${mangaId}/`,
-                method: "GET",
+                url: `${exports.M1000_DOMAIN}/${mangaId}`,
+                method,
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let result = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-            let rawChapters = result["chapters"];
-            let [chapter, group] = chapterId.split(SPLIT_VAR);
-            return createChapterDetails({
-                id: chapterId,
-                longStrip: false,
-                mangaId: mangaId,
-                pages: rawChapters[chapter]["groups"][group].map((page) => `${GUYA_API_BASE}/media/manga/${mangaId}/chapters/${rawChapters[chapter]["folder"]}/${group}/${page}`),
-            });
+            let $ = this.cheerio.load(data.data);
+            return Manga1000Parser_1.parseChapterDetails($, mangaId, chapterId);
         });
     }
-    searchRequest(searchQuery, metadata) {
+    searchRequest(query, metadata) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const request = createRequestObject({
-                url: GUYA_ALL_SERIES_API,
-                method: "GET",
+                url: `${exports.M1000_DOMAIN}/?s=${query}`,
+                method,
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let result = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-            let query = (_a = searchQuery.title) !== null && _a !== void 0 ? _a : '';
-            let filteredResults = Object.keys(result).filter((e) => e.toLowerCase().includes(query.toLowerCase()));
-            let tiles = filteredResults.map((series) => {
-                let seriesMetadata = result[series];
-                return createMangaTile({
-                    id: seriesMetadata["slug"],
-                    image: `${GUYA_API_BASE}/${seriesMetadata["cover"]}`,
-                    title: createIconText({ text: series }),
-                });
-            });
+            let $ = this.cheerio.load(data.data);
+            const manga = Manga1000Parser_1.parseSearchRequest($, query);
+            metadata = manga.length > 0 ? { page: page + 1 } : undefined;
             return createPagedResults({
-                results: tiles
+                results: manga,
+                metadata,
             });
         });
-    }
-    getHomePageSections(sectionCallback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // Send the empty homesection back so the app can preload the section
-            var homeSection = createHomeSection({ id: "all_guya", title: "ALL GUYA" });
-            sectionCallback(homeSection);
-            const request = createRequestObject({
-                url: GUYA_ALL_SERIES_API,
-                method: "GET"
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let result = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-            let mangas = [];
-            for (let series in result) {
-                let seriesDetails = result[series];
-                mangas.push(createMangaTile({
-                    id: seriesDetails["slug"],
-                    image: `${GUYA_API_BASE}/${seriesDetails["cover"]}`,
-                    title: createIconText({ text: series }),
-                }));
-            }
-            homeSection.items = mangas;
-            sectionCallback(homeSection);
-        });
-    }
-    filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: GUYA_ALL_SERIES_API,
-                method: "GET"
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let result = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-            let foundIds = [];
-            for (let series in result) {
-                const seriesDetails = result[series];
-                const seriesUpdated = new Date(seriesDetails["last_updated"] * 1000);
-                const id = seriesDetails["slug"];
-                if (seriesUpdated >= time && ids.includes(id)) {
-                    foundIds.push(id);
-                }
-            }
-            mangaUpdatesFoundCallback(createMangaUpdates({ ids: foundIds }));
-        });
-    }
-    getMangaShareUrl(mangaId) {
-        return `${GUYA_API_BASE}/read/manga/${mangaId}/`;
     }
 }
-exports.Guya = Guya;
+exports.Manga1000 = Manga1000;
 
-},{"paperback-extensions-common":4}]},{},[26])(26)
+},{"./Manga1000Parser":26,"paperback-extensions-common":3}],26:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseSearchRequest = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
+const paperback_extensions_common_1 = require("paperback-extensions-common");
+exports.parseMangaDetails = ($, mangaId) => {
+    const titles = [$('.entry-title').text().split(' ')[0]];
+    const image = $('.wp-image-163').attr('src');
+    const status = paperback_extensions_common_1.MangaStatus.ONGOING; //Manga1000 does not provide this info
+    const author = $('figcaption').find('strong').next().text();
+    return createManga({
+        id: mangaId,
+        titles: titles,
+        image: image ? image : 'https://i.imgur.com/GYUxEX8.png',
+        rating: 0,
+        status: status,
+        author: author,
+    });
+};
+exports.parseChapters = ($, mangaId) => {
+    var _a, _b;
+    const chapters = [];
+    const chapterLinks = $('td').find('a');
+    for (let href of chapterLinks.toArray()) {
+        const id = decodeURI(href.attribs.href); //Decode link to chapter
+        const chapNum = Number((_b = (_a = href.children[0].data) === null || _a === void 0 ? void 0 : _a.match('【(.*?)】')) === null || _b === void 0 ? void 0 : _b[1].replace(/第|話/g, ''));
+        chapters.push(createChapter({
+            id,
+            mangaId,
+            chapNum,
+            langCode: paperback_extensions_common_1.LanguageCode.JAPANESE,
+        }));
+    }
+    return chapters;
+};
+exports.parseChapterDetails = ($, mangaId, chapterId) => {
+    const pages = [];
+    const links = $('.wp-block-image').find('img');
+    for (const img of links.toArray()) {
+        let page = img.attribs['data-src']
+            ? img.attribs['data-src']
+            : img.attribs.src;
+        pages.push(page);
+    }
+    return createChapterDetails({
+        id: chapterId,
+        mangaId,
+        pages,
+        longStrip: false,
+    });
+};
+exports.parseSearchRequest = ($, query) => {
+    var _a, _b;
+    const tiles = [];
+    const results = $('.inner-wrapper').find('article');
+    for (let article of results.toArray()) {
+        const id = article.attribs.class[0].split('-')[1];
+        const magnaId = decodeURI($(article).find('.entry-title > a').text());
+        const image = (_b = (_a = $(article).find('img')) === null || _a === void 0 ? void 0 : _a.first().attr('src')) !== null && _b !== void 0 ? _b : '';
+        const title = $(article).find('.entry-title > a').text();
+        tiles.push(createMangaTile({
+            id: magnaId,
+            image: image,
+            title: createIconText({
+                text: title,
+            }),
+        }));
+    }
+    return tiles;
+};
+
+},{"paperback-extensions-common":3}],27:[function(require,module,exports){
+
+},{}]},{},[25])(25)
 });
