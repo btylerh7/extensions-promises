@@ -34,15 +34,15 @@ export const Manga1000Info: SourceInfo = {
   version: '1.0',
   name: 'Manga1000',
   icon: 'logo.png',
-  author: 'Tyler Baker',
+  author: 'btylerh7',
   authorWebsite: 'https://github.com/btylerh7',
   description: 'Extension that pulls manga from Manga1000',
   hentaiSource: false,
   websiteBaseURL: M1000_DOMAIN,
   sourceTags: [
     {
-      text: 'Notifications',
-      type: TagType.GREEN,
+      text: 'Japanese',
+      type: TagType.GREY,
     },
   ],
 }
