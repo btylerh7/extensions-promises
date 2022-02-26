@@ -891,15 +891,15 @@ exports.Manga1000Info = {
     version: '1.0',
     name: 'Manga1000',
     icon: 'logo.png',
-    author: 'Tyler Baker',
+    author: 'btylerh7',
     authorWebsite: 'https://github.com/btylerh7',
     description: 'Extension that pulls manga from Manga1000',
     hentaiSource: false,
     websiteBaseURL: exports.M1000_DOMAIN,
     sourceTags: [
         {
-            text: 'Notifications',
-            type: paperback_extensions_common_1.TagType.GREEN,
+            text: 'Japanese',
+            type: paperback_extensions_common_1.TagType.GREY,
         },
     ],
 };
