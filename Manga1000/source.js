@@ -875,15 +875,6 @@ __exportStar(require("./UserForm"), exports);
 
 },{"./Chapter":14,"./ChapterDetails":15,"./Constants":16,"./HomeSection":17,"./Languages":18,"./Manga":19,"./MangaTile":20,"./MangaUpdate":21,"./OAuth":22,"./PagedResults":23,"./RequestHeaders":24,"./RequestManager":25,"./RequestObject":26,"./ResponseObject":27,"./SearchRequest":28,"./SourceInfo":29,"./SourceTag":30,"./TagSection":31,"./TrackObject":32,"./UserForm":33}],35:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Manga1000 = exports.Manga1000Info = exports.M1000_DOMAIN = void 0;
 /* eslint-disable linebreak-style */
@@ -937,59 +928,50 @@ class Manga1000 extends paperback_extensions_common_1.Source {
         const mangaIdUrl = encodeURI(entities_1.decodeHTML(mangaId));
         return `${exports.M1000_DOMAIN}/${mangaIdUrl}/`;
     }
-    getMangaDetails(mangaId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
-                method,
-                cookies: this.cookies,
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            return Manga1000Parser_1.parseMangaDetails($, mangaId);
+    async getMangaDetails(mangaId) {
+        const request = createRequestObject({
+            url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
+            method,
+            cookies: this.cookies,
         });
+        const data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        return Manga1000Parser_1.parseMangaDetails($, mangaId);
     }
-    getChapters(mangaId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
-                method,
-                headers,
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            return Manga1000Parser_1.parseChapters($, mangaId);
+    async getChapters(mangaId) {
+        const request = createRequestObject({
+            url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
+            method,
+            headers,
         });
+        const data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        return Manga1000Parser_1.parseChapters($, mangaId);
     }
-    getChapterDetails(mangaId, chapterId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
-                method,
-                headers,
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            return Manga1000Parser_1.parseChapterDetails($, mangaId, chapterId);
+    async getChapterDetails(mangaId, chapterId) {
+        const request = createRequestObject({
+            url: encodeURI(`${exports.M1000_DOMAIN}/${mangaId}`),
+            method,
+            headers,
         });
+        const data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        return Manga1000Parser_1.parseChapterDetails($, mangaId, chapterId);
     }
-    searchRequest(query, metadata) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const request = createRequestObject({
-                url: encodeURI(`${exports.M1000_DOMAIN}/?s=${query}`),
-                method,
-                headers,
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const manga = Manga1000Parser_1.parseSearchRequest($, query);
-            metadata = manga.length > 0 ? { page: page + 1 } : undefined;
-            return createPagedResults({
-                results: manga,
-                metadata,
-            });
+    async searchRequest(query, metadata) {
+        let page = metadata?.page ?? 1;
+        const request = createRequestObject({
+            url: encodeURI(`${exports.M1000_DOMAIN}/?s=${query}`),
+            method,
+            headers,
+        });
+        const data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        const manga = Manga1000Parser_1.parseSearchRequest($, query);
+        metadata = manga.length > 0 ? { page: page + 1 } : undefined;
+        return createPagedResults({
+            results: manga,
+            metadata,
         });
     }
 }
@@ -1015,12 +997,11 @@ exports.parseMangaDetails = ($, mangaId) => {
     });
 };
 exports.parseChapters = ($, mangaId) => {
-    var _a, _b;
     const chapters = [];
     const chapterLinks = $('td').find('a');
     for (let href of chapterLinks.toArray()) {
         const id = decodeURI(href.attribs.href); //Decode link to chapter
-        const chapNum = Number((_b = (_a = href.children[0].data) === null || _a === void 0 ? void 0 : _a.match('【(.*?)】')) === null || _b === void 0 ? void 0 : _b[1].replace(/第|話/g, ''));
+        const chapNum = Number(href.children[0].data?.match('【(.*?)】')?.[1].replace(/第|話/g, ''));
         chapters.push(createChapter({
             id,
             mangaId,
@@ -1047,13 +1028,12 @@ exports.parseChapterDetails = ($, mangaId, chapterId) => {
     });
 };
 exports.parseSearchRequest = ($, query) => {
-    var _a, _b;
     const tiles = [];
     const results = $('.inner-wrapper').find('article');
     for (let article of results.toArray()) {
         const id = article.attribs.class[0].split('-')[1];
         const magnaId = decodeURI($(article).find('.entry-title > a').text());
-        const image = (_b = (_a = $(article).find('img')) === null || _a === void 0 ? void 0 : _a.first().attr('src')) !== null && _b !== void 0 ? _b : '';
+        const image = $(article).find('img')?.first().attr('src') ?? '';
         const title = $(article).find('.entry-title > a').text();
         tiles.push(createMangaTile({
             id: magnaId,

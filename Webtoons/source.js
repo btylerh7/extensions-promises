@@ -325,15 +325,6 @@ __exportStar(require("./UserForm"), exports);
 
 },{"./Chapter":5,"./ChapterDetails":6,"./Constants":7,"./HomeSection":8,"./Languages":9,"./Manga":10,"./MangaTile":11,"./MangaUpdate":12,"./OAuth":13,"./PagedResults":14,"./RequestHeaders":15,"./RequestManager":16,"./RequestObject":17,"./ResponseObject":18,"./SearchRequest":19,"./SourceInfo":20,"./SourceTag":21,"./TagSection":22,"./TrackObject":23,"./UserForm":24}],26:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Webtoons = exports.WebtoonsInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
@@ -378,241 +369,219 @@ class Webtoons extends paperback_extensions_common_1.Source {
             referer: WEBTOON_DOMAIN,
         };
     }
-    getMangaDetails(mangaId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (mangaId.startsWith("c")) {
-                // This is a challenge title
-                const request = createRequestObject({
-                    url: `${WEBTOON_DOMAIN}/challenge/episodeList?titleNo=${mangaId.substr(1, mangaId.length)}`,
-                    method: "GET",
-                    cookies: this.cookies,
-                    headers: {
-                        referer: WEBTOON_DOMAIN,
-                    },
-                });
-                const data = yield this.requestManager.schedule(request, 1); //TODO: What if this isn't a 200 code
-                const $ = this.cheerio.load(data.data);
-                return yield WebtoonsParser_1.parseMangaDetailsChallenge($, mangaId);
-            }
-            else {
-                // This is an original title
-                const request = createRequestObject({
-                    url: `${WEBTOON_DOMAIN}/episodeList?titleNo=${mangaId}`,
-                    cookies: this.cookies,
-                    method: "GET",
-                });
-                const data = yield this.requestManager.schedule(request, 1);
-                if (data.status != 200) {
-                    throw new Error(`Returned a nonstandard HTTP code: ${data.status}`);
-                }
-                const $ = this.cheerio.load(data.data);
-                return yield WebtoonsParser_1.parseMangaDetailsOrig($, mangaId);
-            }
-        });
-    }
-    getChapters(mangaId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (mangaId.startsWith("c")) {
-                const request = createRequestObject({
-                    url: `${WEBTOON_DOMAIN}/en/challenge/reeeee/list?title_no=${mangaId.substr(1, mangaId.length)}`,
-                    method: "GET",
-                    cookies: this.cookies,
-                    headers: {
-                        referer: WEBTOON_DOMAIN,
-                    },
-                });
-                let data = yield this.requestManager.schedule(request, 1);
-                if (data.status != 200 && data.status >= 400) {
-                    throw new Error(`Failed to get chapters for Webtoons using mangaId ${mangaId}`);
-                }
-                let $ = this.cheerio.load(data.data);
-                const parseResults = WebtoonsParser_1.parseGetChaptersChallenge($, mangaId);
-                // If there are more pages that need to be scanned, concat them together
-                let hasNextPage = parseResults.hasNextPage;
-                while (hasNextPage) {
-                    const newRequest = createRequestObject({
-                        url: `${WEBTOON_DOMAIN}/en/challenge/${parseResults.pagnationId}/list?title_no=${mangaId.substr(1, mangaId.length)}&page=${hasNextPage}`,
-                        method: "GET",
-                        cookies: this.cookies,
-                        headers: {
-                            referer: WEBTOON_DOMAIN,
-                        },
-                    });
-                    data = yield this.requestManager.schedule(newRequest, 1);
-                    $ = this.cheerio.load(data.data);
-                    const appendResults = WebtoonsParser_1.parseGetChaptersChallenge($, mangaId);
-                    hasNextPage = appendResults.hasNextPage;
-                    parseResults.chapters = parseResults.chapters.concat(appendResults.chapters);
-                }
-                // We've collected all of the pages, reverse the chapter list so that we're going from 1 to current properly, and return!
-                return parseResults.chapters.reverse();
-            }
-            else {
-                const request = createRequestObject({
-                    url: `${WEBTOON_DOMAIN}/en/aaahh/reeeee/list?title_no=${mangaId}`,
-                    method: "GET",
-                    cookies: this.cookies,
-                    headers: {
-                        referer: WEBTOON_DOMAIN,
-                    },
-                });
-                let data = yield this.requestManager.schedule(request, 1);
-                let $ = this.cheerio.load(data.data);
-                const parseResults = WebtoonsParser_1.parseGetChaptersOrig($, mangaId);
-                // If there are more pages that need to be scanned, concat them together
-                let hasNextPage = parseResults.hasNextPage;
-                while (hasNextPage) {
-                    const newRequest = createRequestObject({
-                        url: `${WEBTOON_DOMAIN}/en/${parseResults.titleId}/${parseResults.pagnationId}/list?title_no=${mangaId}&page=${hasNextPage}`,
-                        method: "GET",
-                        cookies: this.cookies,
-                        headers: {
-                            referer: WEBTOON_DOMAIN,
-                        },
-                    });
-                    data = yield this.requestManager.schedule(newRequest, 1);
-                    $ = this.cheerio.load(data.data);
-                    const appendResults = WebtoonsParser_1.parseGetChaptersOrig($, mangaId);
-                    hasNextPage = appendResults.hasNextPage;
-                    parseResults.chapters = parseResults.chapters.concat(appendResults.chapters);
-                }
-                // We've collected all of the pages, reverse the chapter list so that we're going from 1 to current properly, and return!
-                return parseResults.chapters.reverse();
-            }
-        });
-    }
-    getChapterDetails(mangaId, chapterId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (mangaId.startsWith('c')) {
-                // Challenge parsing
-                const request = createRequestObject({
-                    url: `${WEBTOON_DOMAIN}/en/challenge/ree/someChapter/viewer?title_no=${mangaId.substr(1, mangaId.length)}&episode_no=${chapterId}&webtoonType=CHALLENGE`,
-                    method: 'GET',
-                    cookies: this.cookies,
-                    headers: {
-                        referer: WEBTOON_DOMAIN
-                    }
-                });
-                const data = yield this.requestManager.schedule(request, 1);
-                if (data.status != 200 && data.status >= 400) {
-                    throw new Error(`Failed to get challenge chapter details for title: ${mangaId} for chapter ${chapterId}`);
-                }
-                const $ = this.cheerio.load(data.data);
-                return WebtoonsParser_1.parseChapterDetailsChallenge($, mangaId, chapterId);
-            }
-            else {
-                // Orig parsing
-                const request = createRequestObject({
-                    url: `${WEBTOON_DOMAIN}/en/fantasy/ree/someChapter/viewer?title_no=${mangaId}&episode_no=${chapterId}`,
-                    method: 'GET',
-                    cookies: this.cookies,
-                    headers: {
-                        referer: WEBTOON_DOMAIN
-                    }
-                });
-                const data = yield this.requestManager.schedule(request, 1);
-                if (data.status != 200 && data.status >= 400) {
-                    throw new Error(`Failed to get orig chapter details for title: ${mangaId} for chapter ${chapterId}`);
-                }
-                const $ = this.cheerio.load(data.data);
-                return WebtoonsParser_1.parseChapterDetailsOrig($, mangaId, chapterId);
-            }
-        });
-    }
-    searchRequest(query, metadata) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
+    async getMangaDetails(mangaId) {
+        if (mangaId.startsWith("c")) {
+            // This is a challenge title
             const request = createRequestObject({
-                url: `${WEBTOON_DOMAIN}/en/search?keyword=${(_a = query.title) === null || _a === void 0 ? void 0 : _a.replace(/ /g, '%20')}`,
+                url: `${WEBTOON_DOMAIN}/challenge/episodeList?titleNo=${mangaId.substr(1, mangaId.length)}`,
                 method: "GET",
                 cookies: this.cookies,
                 headers: {
                     referer: WEBTOON_DOMAIN,
                 },
             });
-            const data = yield this.requestManager.schedule(request, 1);
-            if (data.status != 200 && data.status >= 400) {
+            const data = await this.requestManager.schedule(request, 1); //TODO: What if this isn't a 200 code
+            const $ = this.cheerio.load(data.data);
+            return await WebtoonsParser_1.parseMangaDetailsChallenge($, mangaId);
+        }
+        else {
+            // This is an original title
+            const request = createRequestObject({
+                url: `${WEBTOON_DOMAIN}/episodeList?titleNo=${mangaId}`,
+                cookies: this.cookies,
+                method: "GET",
+            });
+            const data = await this.requestManager.schedule(request, 1);
+            if (data.status != 200) {
                 throw new Error(`Returned a nonstandard HTTP code: ${data.status}`);
             }
             const $ = this.cheerio.load(data.data);
-            //TODO: Support paged results
-            const results = yield WebtoonsParser_1.parseSearchResults($);
-            return results;
-        });
+            return await WebtoonsParser_1.parseMangaDetailsOrig($, mangaId);
+        }
     }
-    getHomePageSections(sectionCallback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const rollingUpdates = createHomeSection({ id: 'rolling_updates', title: 'Hot Webcomics', view_more: true });
-            const completedSeries = createHomeSection({ id: 'completed_series', title: `Completed Series`, view_more: true });
-            sectionCallback(rollingUpdates);
-            sectionCallback(completedSeries);
+    async getChapters(mangaId) {
+        if (mangaId.startsWith("c")) {
             const request = createRequestObject({
-                url: `${WEBTOON_DOMAIN}/en/dailySchedule`,
+                url: `${WEBTOON_DOMAIN}/en/challenge/reeeee/list?title_no=${mangaId.substr(1, mangaId.length)}`,
+                method: "GET",
                 cookies: this.cookies,
-                method: `GET`
+                headers: {
+                    referer: WEBTOON_DOMAIN,
+                },
             });
-            const data = yield this.requestManager.schedule(request, 1);
-            if (data.status != 200) {
-                throw new Error(`Failed to retrieve homepage information`);
+            let data = await this.requestManager.schedule(request, 1);
+            if (data.status != 200 && data.status >= 400) {
+                throw new Error(`Failed to get chapters for Webtoons using mangaId ${mangaId}`);
+            }
+            let $ = this.cheerio.load(data.data);
+            const parseResults = WebtoonsParser_1.parseGetChaptersChallenge($, mangaId);
+            // If there are more pages that need to be scanned, concat them together
+            let hasNextPage = parseResults.hasNextPage;
+            while (hasNextPage) {
+                const newRequest = createRequestObject({
+                    url: `${WEBTOON_DOMAIN}/en/challenge/${parseResults.pagnationId}/list?title_no=${mangaId.substr(1, mangaId.length)}&page=${hasNextPage}`,
+                    method: "GET",
+                    cookies: this.cookies,
+                    headers: {
+                        referer: WEBTOON_DOMAIN,
+                    },
+                });
+                data = await this.requestManager.schedule(newRequest, 1);
+                $ = this.cheerio.load(data.data);
+                const appendResults = WebtoonsParser_1.parseGetChaptersChallenge($, mangaId);
+                hasNextPage = appendResults.hasNextPage;
+                parseResults.chapters = parseResults.chapters.concat(appendResults.chapters);
+            }
+            // We've collected all of the pages, reverse the chapter list so that we're going from 1 to current properly, and return!
+            return parseResults.chapters.reverse();
+        }
+        else {
+            const request = createRequestObject({
+                url: `${WEBTOON_DOMAIN}/en/aaahh/reeeee/list?title_no=${mangaId}`,
+                method: "GET",
+                cookies: this.cookies,
+                headers: {
+                    referer: WEBTOON_DOMAIN,
+                },
+            });
+            let data = await this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            const parseResults = WebtoonsParser_1.parseGetChaptersOrig($, mangaId);
+            // If there are more pages that need to be scanned, concat them together
+            let hasNextPage = parseResults.hasNextPage;
+            while (hasNextPage) {
+                const newRequest = createRequestObject({
+                    url: `${WEBTOON_DOMAIN}/en/${parseResults.titleId}/${parseResults.pagnationId}/list?title_no=${mangaId}&page=${hasNextPage}`,
+                    method: "GET",
+                    cookies: this.cookies,
+                    headers: {
+                        referer: WEBTOON_DOMAIN,
+                    },
+                });
+                data = await this.requestManager.schedule(newRequest, 1);
+                $ = this.cheerio.load(data.data);
+                const appendResults = WebtoonsParser_1.parseGetChaptersOrig($, mangaId);
+                hasNextPage = appendResults.hasNextPage;
+                parseResults.chapters = parseResults.chapters.concat(appendResults.chapters);
+            }
+            // We've collected all of the pages, reverse the chapter list so that we're going from 1 to current properly, and return!
+            return parseResults.chapters.reverse();
+        }
+    }
+    async getChapterDetails(mangaId, chapterId) {
+        if (mangaId.startsWith('c')) {
+            // Challenge parsing
+            const request = createRequestObject({
+                url: `${WEBTOON_DOMAIN}/en/challenge/ree/someChapter/viewer?title_no=${mangaId.substr(1, mangaId.length)}&episode_no=${chapterId}&webtoonType=CHALLENGE`,
+                method: 'GET',
+                cookies: this.cookies,
+                headers: {
+                    referer: WEBTOON_DOMAIN
+                }
+            });
+            const data = await this.requestManager.schedule(request, 1);
+            if (data.status != 200 && data.status >= 400) {
+                throw new Error(`Failed to get challenge chapter details for title: ${mangaId} for chapter ${chapterId}`);
             }
             const $ = this.cheerio.load(data.data);
-            WebtoonsParser_1.parseHomeSections($, [rollingUpdates, completedSeries], sectionCallback);
-        });
-    }
-    getViewMoreItems(homepageSectionId, metadata) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // We don't care about metadata for this source, fortunately
-            //TODO: Add support for a view-more for canvas titles later
-            switch (homepageSectionId) {
-                case "rolling_updates": {
-                    const request = createRequestObject({
-                        url: `${WEBTOON_DOMAIN}/en/dailySchedule`,
-                        cookies: this.cookies,
-                        method: `GET`
-                    });
-                    const data = yield this.requestManager.schedule(request, 1);
-                    if (data.status != 200 && data.status >= 400) {
-                        throw new Error(`Failed to getViewMoreItems for section ${homepageSectionId}`);
-                    }
-                    const $ = this.cheerio.load(data.data);
-                    return WebtoonsParser_1.parseRollingViewMoreTitles($);
+            return WebtoonsParser_1.parseChapterDetailsChallenge($, mangaId, chapterId);
+        }
+        else {
+            // Orig parsing
+            const request = createRequestObject({
+                url: `${WEBTOON_DOMAIN}/en/fantasy/ree/someChapter/viewer?title_no=${mangaId}&episode_no=${chapterId}`,
+                method: 'GET',
+                cookies: this.cookies,
+                headers: {
+                    referer: WEBTOON_DOMAIN
                 }
-                case "completed_series": {
-                    const request = createRequestObject({
-                        url: `${WEBTOON_DOMAIN}/en/dailySchedule`,
-                        cookies: this.cookies,
-                        method: `GET`
-                    });
-                    const data = yield this.requestManager.schedule(request, 1);
-                    if (data.status != 200 && data.status >= 400) {
-                        throw new Error(`Failed to getViewMoreItems for section ${homepageSectionId}`);
-                    }
-                    const $ = this.cheerio.load(data.data);
-                    return WebtoonsParser_1.parseCompletedViewMoreTitles($);
-                }
-                default: return null;
+            });
+            const data = await this.requestManager.schedule(request, 1);
+            if (data.status != 200 && data.status >= 400) {
+                throw new Error(`Failed to get orig chapter details for title: ${mangaId} for chapter ${chapterId}`);
             }
+            const $ = this.cheerio.load(data.data);
+            return WebtoonsParser_1.parseChapterDetailsOrig($, mangaId, chapterId);
+        }
+    }
+    async searchRequest(query, metadata) {
+        const request = createRequestObject({
+            url: `${WEBTOON_DOMAIN}/en/search?keyword=${query.title?.replace(/ /g, '%20')}`,
+            method: "GET",
+            cookies: this.cookies,
+            headers: {
+                referer: WEBTOON_DOMAIN,
+            },
         });
+        const data = await this.requestManager.schedule(request, 1);
+        if (data.status != 200 && data.status >= 400) {
+            throw new Error(`Returned a nonstandard HTTP code: ${data.status}`);
+        }
+        const $ = this.cheerio.load(data.data);
+        //TODO: Support paged results
+        const results = await WebtoonsParser_1.parseSearchResults($);
+        return results;
+    }
+    async getHomePageSections(sectionCallback) {
+        const rollingUpdates = createHomeSection({ id: 'rolling_updates', title: 'Hot Webcomics', view_more: true });
+        const completedSeries = createHomeSection({ id: 'completed_series', title: `Completed Series`, view_more: true });
+        sectionCallback(rollingUpdates);
+        sectionCallback(completedSeries);
+        const request = createRequestObject({
+            url: `${WEBTOON_DOMAIN}/en/dailySchedule`,
+            cookies: this.cookies,
+            method: `GET`
+        });
+        const data = await this.requestManager.schedule(request, 1);
+        if (data.status != 200) {
+            throw new Error(`Failed to retrieve homepage information`);
+        }
+        const $ = this.cheerio.load(data.data);
+        WebtoonsParser_1.parseHomeSections($, [rollingUpdates, completedSeries], sectionCallback);
+    }
+    async getViewMoreItems(homepageSectionId, metadata) {
+        // We don't care about metadata for this source, fortunately
+        //TODO: Add support for a view-more for canvas titles later
+        switch (homepageSectionId) {
+            case "rolling_updates": {
+                const request = createRequestObject({
+                    url: `${WEBTOON_DOMAIN}/en/dailySchedule`,
+                    cookies: this.cookies,
+                    method: `GET`
+                });
+                const data = await this.requestManager.schedule(request, 1);
+                if (data.status != 200 && data.status >= 400) {
+                    throw new Error(`Failed to getViewMoreItems for section ${homepageSectionId}`);
+                }
+                const $ = this.cheerio.load(data.data);
+                return WebtoonsParser_1.parseRollingViewMoreTitles($);
+            }
+            case "completed_series": {
+                const request = createRequestObject({
+                    url: `${WEBTOON_DOMAIN}/en/dailySchedule`,
+                    cookies: this.cookies,
+                    method: `GET`
+                });
+                const data = await this.requestManager.schedule(request, 1);
+                if (data.status != 200 && data.status >= 400) {
+                    throw new Error(`Failed to getViewMoreItems for section ${homepageSectionId}`);
+                }
+                const $ = this.cheerio.load(data.data);
+                return WebtoonsParser_1.parseCompletedViewMoreTitles($);
+            }
+            default: return null;
+        }
     }
 }
 exports.Webtoons = Webtoons;
 
 },{"./WebtoonsParser":27,"paperback-extensions-common":4}],27:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseHomeSections = exports.parseCompletedViewMoreTitles = exports.parseRollingViewMoreTitles = exports.parseSearchResults = exports.parseChapterDetailsOrig = exports.parseChapterDetailsChallenge = exports.parseGetChaptersOrig = exports.parseGetChaptersChallenge = exports.parseMangaDetailsOrig = exports.parseMangaDetailsChallenge = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const WEBTOON_DOMAIN = 'https://www.webtoons.com';
-exports.parseMangaDetailsChallenge = ($, mangaId) => __awaiter(void 0, void 0, void 0, function* () {
+exports.parseMangaDetailsChallenge = async ($, mangaId) => {
     const title = $('h3._challengeTitle').text().replace('DASHBOARD', '').trim();
     const image = $('img', $('span.thmb')).attr('src');
     if (!image) {
@@ -634,12 +603,12 @@ exports.parseMangaDetailsChallenge = ($, mangaId) => __awaiter(void 0, void 0, v
         author: author,
         desc: description
     });
-});
-exports.parseMangaDetailsOrig = ($, mangaId) => __awaiter(void 0, void 0, void 0, function* () {
+};
+exports.parseMangaDetailsOrig = async ($, mangaId) => {
     const title = $("h1.subj").text();
     // The image is awkwardly embedded into a style, parse that out
     const imageContext = $("div.detail_body").attr("style");
-    const image = imageContext === null || imageContext === void 0 ? void 0 : imageContext.match(/url\((.+)\)/);
+    const image = imageContext?.match(/url\((.+)\)/);
     if (!imageContext || !image || !image[1]) {
         throw new Error(`Failed to parse MangaDetails for ${mangaId}`);
     }
@@ -663,13 +632,12 @@ exports.parseMangaDetailsOrig = ($, mangaId) => __awaiter(void 0, void 0, void 0
         author: author,
         desc: description,
     });
-});
+};
 /**
  * We're supposed to return a Chapter[] here, but since we might need more pages to get all of the
  * chapters, return a paged structure here
  */
 exports.parseGetChaptersChallenge = ($, mangaId) => {
-    var _a;
     const chapters = [];
     for (let context of $('li', $('ul#_listUl')).toArray()) {
         const id = $(context).attr('data-episode-no');
@@ -693,7 +661,7 @@ exports.parseGetChaptersChallenge = ($, mangaId) => {
         // Yup, queue up a navigation to the next page value
         const valContext = $('span.on', $('div.paginate')).text();
         const nextPageVal = Number(valContext) + 1;
-        const paginationId = (_a = $('link').last().attr('href')) === null || _a === void 0 ? void 0 : _a.match(/\/challenge\/(.+)\/list/);
+        const paginationId = $('link').last().attr('href')?.match(/\/challenge\/(.+)\/list/);
         if (isNaN(nextPageVal) || !paginationId || !paginationId[1]) {
             console.log("Error retrieving the next page to scan for, results may be incomplete");
             return {
@@ -717,7 +685,6 @@ exports.parseGetChaptersChallenge = ($, mangaId) => {
  * chapters, return a paged structure here
  */
 exports.parseGetChaptersOrig = ($, mangaId) => {
-    var _a;
     const chapters = [];
     for (let context of $('li', $('ul#_listUl')).toArray()) {
         const id = $(context).attr('data-episode-no');
@@ -741,7 +708,7 @@ exports.parseGetChaptersOrig = ($, mangaId) => {
         // Yup, queue up a navigation to the next page value
         const valContext = $('span.on', $('div.paginate')).text();
         const nextPageVal = Number(valContext) + 1;
-        const paginationIds = (_a = $('link').last().attr('href')) === null || _a === void 0 ? void 0 : _a.match(/\/en\/(.+)\/(.+)\/list/);
+        const paginationIds = $('link').last().attr('href')?.match(/\/en\/(.+)\/(.+)\/list/);
         if (isNaN(nextPageVal) || !paginationIds || !paginationIds[1] || !paginationIds[2]) {
             console.log("Error retrieving the next page to scan for, results may be incomplete");
             return {
@@ -793,13 +760,12 @@ exports.parseChapterDetailsOrig = ($, mangaId, chapterId) => {
         longStrip: true
     });
 };
-exports.parseSearchResults = ($) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+exports.parseSearchResults = async ($) => {
     const searchResults = [];
     // Webtoons splits results into two pieces: A Origionals category, and a canvas category. Both need supported
     // Get the 'Origional' pane details
     for (let tile of $("li", $("ul.card_lst")).toArray()) {
-        let id = (_a = $("a.card_item", $(tile)).attr("href")) === null || _a === void 0 ? void 0 : _a.match(/\?titleNo=(\d+)/);
+        let id = $("a.card_item", $(tile)).attr("href")?.match(/\?titleNo=(\d+)/);
         let image = $("img", $(tile)).attr("src");
         let title = createIconText({ text: $(".subj", $(tile)).text() });
         let primaryText = createIconText({ text: $("em.grade_num", $(tile)).text(), icon: "heart" }); //TODO: What is this image icon name?
@@ -817,7 +783,7 @@ exports.parseSearchResults = ($) => __awaiter(void 0, void 0, void 0, function* 
     }
     // Capture all of the canvas results
     for (let tile of $("li", $("div.challenge_lst")).toArray()) {
-        let id = (_b = $("a.challenge_item", $(tile)).attr("href")) === null || _b === void 0 ? void 0 : _b.match(/\?titleNo=(\d+)/);
+        let id = $("a.challenge_item", $(tile)).attr("href")?.match(/\?titleNo=(\d+)/);
         let image = $("img", $(tile)).attr("src");
         let title = createIconText({ text: $(".subj", $(tile)).text() });
         if (!id || !id[1] || !image || !title.text) {
@@ -834,13 +800,12 @@ exports.parseSearchResults = ($) => __awaiter(void 0, void 0, void 0, function* 
     return createPagedResults({
         results: searchResults,
     });
-});
+};
 exports.parseRollingViewMoreTitles = ($) => {
-    var _a;
     const tiles = [];
     for (let context of $('li', $('div#dailyList')).toArray()) { // This is quite the broad selector, it's probably fine?
         // None of these rolling updates will ever be a challenge title, no need to encode the IDs
-        const idContext = (_a = $('a', $(context)).attr('href')) === null || _a === void 0 ? void 0 : _a.match(/list\?title_no=(\d.+)/);
+        const idContext = $('a', $(context)).attr('href')?.match(/list\?title_no=(\d.+)/);
         const title = $('p.subj', $(context)).text().trim();
         const image = $('img', $(context)).attr('src');
         const likes = $('em.grade_num', $(context)).text();
@@ -858,11 +823,10 @@ exports.parseRollingViewMoreTitles = ($) => {
     return createPagedResults({ results: tiles });
 };
 exports.parseCompletedViewMoreTitles = ($) => {
-    var _a;
     const tiles = [];
     for (let context of $('li', $('ul.daily_card', $('div.daily_section', $('div.comp')))).toArray()) {
         // None of these rolling updates will ever be a challenge title, no need to encode the IDs
-        const idContext = (_a = $('a', $(context)).attr('href')) === null || _a === void 0 ? void 0 : _a.match(/list\?title_no=(\d.+)/);
+        const idContext = $('a', $(context)).attr('href')?.match(/list\?title_no=(\d.+)/);
         const title = $('p.subj', $(context)).text().trim();
         const image = $('img', $(context)).attr('src');
         const likes = $('em.grade_num', $(context)).text();
@@ -880,14 +844,13 @@ exports.parseCompletedViewMoreTitles = ($) => {
     return createPagedResults({ results: tiles });
 };
 exports.parseHomeSections = ($, sections, sectionCallback) => {
-    var _a, _b;
     const rollingUpdates = [];
     const completedSeries = [];
     // We're only going to grab the first title for each day by default. View more will provide the full list
     for (let scheduleContext of $('div.daily_section', $('#dailyList')).toArray()) {
         const cardContext = $('li', $('ul.daily_card', $(scheduleContext)).first()).first();
         // None of these rolling updates will ever be a challenge title, no need to encode the IDs
-        const idContext = (_a = $('a', $(cardContext)).attr('href')) === null || _a === void 0 ? void 0 : _a.match(/list\?title_no=(\d.+)/);
+        const idContext = $('a', $(cardContext)).attr('href')?.match(/list\?title_no=(\d.+)/);
         const title = $('p.subj', $(cardContext)).text().trim();
         const image = $('img', $(cardContext)).attr('src');
         const likes = $('em.grade_num', $(cardContext)).text();
@@ -912,7 +875,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
             break;
         }
         // None of these rolling updates will ever be a challenge title, no need to encode the IDs
-        const idContext = (_b = $('a', $(context)).attr('href')) === null || _b === void 0 ? void 0 : _b.match(/list\?title_no=(\d.+)/);
+        const idContext = $('a', $(context)).attr('href')?.match(/list\?title_no=(\d.+)/);
         const title = $('p.subj', $(context)).text().trim();
         const image = $('img', $(context)).attr('src');
         const likes = $('em.grade_num', $(context)).text();
